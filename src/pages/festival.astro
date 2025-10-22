@@ -5,7 +5,11 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 <Layout>
   <section class="bg-white py-16 px-4">
     <div class="max-w-screen-xl mx-auto">
-      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Festivals en Bourgogne-Franche-Comté</h1>
+      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Lieux et informations concises sur les différents festivals annuels de Bourgogne Franche-Comté.</h1>
+
+      <p class="text-center text-gray-700 text-lg max-w-3xl mx-auto mb-8">
+        Cette carte choroplèthe permet d'avoir quelques informations sur chacun des festivals avant d'avoir plus ample informations dans la liste ci dessous (et permet évidemment d'obtenir la localisations de ces festivals).
+      </p>
 
       <!-- Carte + filtre -->
       <div class="space-y-6">
@@ -22,13 +26,21 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
         <div id="plan" class="w-full h-[600px] rounded-lg shadow border border-gray-200"></div>
 
         <!-- Infos festival -->
+
+
         <div id="festival-info" class="mt-6 text-sm text-gray-700 font-sans"></div>
       </div>
     </div>
   </section>
   <section class="bg-white py-16 px-4 border-t border-gray-200">
   <div class="max-w-screen-xl mx-auto">
-    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Liste des festivals par département</h2>
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Liste des informations détaillées sur les différents festivals de Bourgogne Franche-Comté</h2>
+
+     <p class="text-center text-gray-700 text-lg max-w-3xl mx-auto mb-8">
+        Ici les informations sont plus détaillés que sur la carte. Dans le site, cette partie sera additionnelle à la carte. On y observe la localisation, la discipline, la période, le contact, le site web lorsqu'il y en a un et l'envergure du festival. Ici les informations sont plus détaillés que sur la carte. Dans le site, cette partie sera additionnelle à la carte. On y observe la localisation, la discipline, la période, le contact, le site web (lorsqu'il y en a un) et l'envergure du festival. Grace à ces deux représentations, qu'il est possible de liées à ceux des mobilités on obtient le parcours voulu de chacun de façon la plus écologique possible.
+
+
+      </p>
 
     <!-- Sélecteur -->
     <div class="text-center mb-6">
