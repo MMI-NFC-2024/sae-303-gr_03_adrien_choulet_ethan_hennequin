@@ -1,0 +1,43 @@
+---
+// Composant VisualizationsGrid.astro
+---
+<section class="bg-white py-16 px-4">
+  <div class="max-w-screen-xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+      Explorez les visualisations
+    </h2>
+    <p class="text-center text-gray-600 mb-12">
+      Découvrez nos analyses interactives dans l’Observatoire
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Carte 1 -->
+      <div class="bg-gray-50 rounded-lg shadow hover:shadow-lg transition p-4">
+        <img src="/src/assets/garebesancon.jpg" alt="garebesancon" class="rounded-md mb-4 w-full h-40 object-cover" />
+        <h3 class="text-lg font-semibold text-gray-800">Accessibilité ferroviaire aux lieux culturels</h3>
+        <p class="text-lg">Analyse de la proximité entre les gares SNCF et les principaux lieux culturels de la région. Découvrez quelles zones sont les mieux desservies.</p>
+      </div>
+
+      <!-- Carte 2 -->
+      <div class="bg-gray-50 rounded-lg shadow hover:shadow-lg transition p-4">
+        <img src="/src/assets/horraire.png" alt="Trajets et lieux culturels" class="rounded-md mb-4 w-full h-40 object-cover" />
+        <h3 class="text-lg font-semibold text-gray-800">Horaires des trains et événements culturels</h3>
+        <p class="text-lg">Corrélation entre les horaires de trains (TER, TGV, TGVmax) et les horaires d'ouverture des festivals et établissements culturels.</p>
+      </div>
+
+      <!-- Carte 3 -->
+      <div class="bg-gray-50 rounded-lg shadow hover:shadow-lg transition p-4">
+        <img src="/src/assets/Festival.jpg" alt="Accessibilité culturelle" class="rounded-md mb-4 w-full h-40 object-cover" />
+        <h3 class="text-lg font-semibold text-gray-800">Disparités des festival dans la region</h3>
+        <p class="text-lg">Étude de la disparité de l'accès aux Festival en Bourgogne-Franche-Comté.</p>
+      </div>
+
+      <!-- Carte 4 -->
+      <div class="bg-gray-50 rounded-lg shadow hover:shadow-lg transition p-4">
+        <img src="/src/assets/chateau.png" alt="Billets d’événements" class="rounded-md mb-4 w-full h-40 object-cover" />
+        <h3 class="text-lg font-semibold text-gray-800">Disparités départementales</h3>
+        <p class="text-lg">Comparaison de l'offre culturelle accessible par train selon les huit départements de la région : Côte-d'Or, Doubs, Jura, Nièvre, etc.</p>
+      </div>
+    </div>
+  </div>
+</section>
