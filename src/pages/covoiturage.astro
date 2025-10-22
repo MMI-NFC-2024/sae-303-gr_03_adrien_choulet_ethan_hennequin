@@ -1,0 +1,155 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout>
+  <section class="bg-white py-16 px-4">
+    <div class="max-w-screen-xl mx-auto">
+      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Aires de covoiturage par département</h1>
+      <div id="donut-covoiturage" class="flex justify-center"></div>
+    </div>
+  </section>
+
+  <!-- Script -->
+  <script type="module">
+    const francheComte = [25, 39, 70, 90];
+    const bourgogne = [21, 58, 71, 89];
+
+    const raw = await fetch("/src/assets/aire-covoiturage_categories.csv").then(r => r.text());
+    const rows = raw.trim().split("\n");
+    const headers = rows[0].split(",");
+    const data = rows.slice(1).map(line => {
+      const values = line.split(",");
+      const obj = {};
+      headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim());
+      return obj;
+    });
+
+    // Regroupement par département
+    const counts = {};
+    data.forEach(d => {
+      const dep = parseInt(d.num_dep);
+      if (!isNaN(dep)) {
+        counts[dep] = (counts[dep] || 0) + 1;
+      }
+    });
+
+    const total = Object.values(counts).reduce((a, b) => a + b, 0);
+    const dataDepartements = Object.entries(counts).map(([dep, count]) => ({
+      Departement: parseInt(dep),
+      Nombre_de_Lieux: count,
+      proportion: count / total
+    })).sort((a, b) => a.Departement - b.Departement);
+
+    // Couleurs
+    const colorMap = {};
+    const oranges = ["#ff8c00", "#ff7f00", "#ff9933", "#ffaa33"];
+    const blues = ["#1e90ff", "#4169e1", "#0066cc", "#3366ff"];
+    francheComte.forEach((d, i) => colorMap[d] = oranges[i % oranges.length]);
+    bourgogne.forEach((d, i) => colorMap[d] = blues[i % blues.length]);
+
+    // Données pour arcs
+    const angles = [];
+    let startAngle = 0;
+    dataDepartements.forEach(d => {
+      const angle = d.proportion * 2 * Math.PI;
+      angles.push({ ...d, startAngle, endAngle: startAngle + angle });
+      startAngle += angle;
+    });
+
+    const outerRadius = 220;
+    const innerRadius = 90;
+
+    function polarToCartesian(angle, radius) {
+      return [Math.cos(angle) * radius, Math.sin(angle) * radius];
+    }
+
+    function describeArc(start, end, r1, r2) {
+      const [x0, y0] = polarToCartesian(start, r2);
+      const [x1, y1] = polarToCartesian(end, r2);
+      const [x2, y2] = polarToCartesian(end, r1);
+      const [x3, y3] = polarToCartesian(start, r1);
+      const largeArc = end - start > Math.PI ? 1 : 0;
+      return `
+        M ${x0} ${y0}
+        A ${r2} ${r2} 0 ${largeArc} 1 ${x1} ${y1}
+        L ${x2} ${y2}
+        A ${r1} ${r1} 0 ${largeArc} 0 ${x3} ${y3}
+        Z
+      `;
+    }
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "1000");
+    svg.setAttribute("height", "600");
+    svg.setAttribute("viewBox", "-350 -300 1000 600");
+    svg.style.fontFamily = "Inter, sans-serif";
+
+    // Titre
+    const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    title.setAttribute("x", "0");
+    title.setAttribute("y", "-260");
+    title.setAttribute("text-anchor", "middle");
+    title.setAttribute("font-size", "24");
+    title.setAttribute("font-weight", "bold");
+    title.textContent = "Aires de covoiturage par département";
+    svg.appendChild(title);
+
+    // Sous-titre
+    const subtitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    subtitle.setAttribute("x", "0");
+    subtitle.setAttribute("y", "-238");
+    subtitle.setAttribute("text-anchor", "middle");
+    subtitle.setAttribute("font-size", "16");
+    subtitle.setAttribute("fill", "#555");
+    subtitle.textContent = "Bourgogne-Franche-Comté";
+    svg.appendChild(subtitle);
+
+    // Arcs
+    angles.forEach(d => {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", describeArc(d.startAngle, d.endAngle, innerRadius, outerRadius));
+      path.setAttribute("fill", colorMap[d.Departement] || "#999");
+      path.setAttribute("stroke", "white");
+      path.setAttribute("stroke-width", "2");
+      svg.appendChild(path);
+    });
+
+    // Labels
+    angles.forEach(d => {
+      const mid = (d.startAngle + d.endAngle) / 2;
+      const [x, y] = polarToCartesian(mid, outerRadius * 0.75);
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", x);
+      text.setAttribute("y", y);
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("alignment-baseline", "middle");
+      text.setAttribute("font-size", "13");
+      text.setAttribute("font-weight", "600");
+      text.setAttribute("fill", "white");
+      const pct = (d.proportion * 100).toFixed(1);
+      text.textContent = `${d.Departement} (${pct}%)`;
+      svg.appendChild(text);
+    });
+
+    // Centre
+    const totalText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    totalText.setAttribute("text-anchor", "middle");
+    totalText.setAttribute("alignment-baseline", "middle");
+    totalText.setAttribute("font-size", "38");
+    totalText.setAttribute("font-weight", "bold");
+    totalText.setAttribute("y", "-5");
+    totalText.textContent = total;
+    svg.appendChild(totalText);
+
+    const labelText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    labelText.setAttribute("text-anchor", "middle");
+    labelText.setAttribute("alignment-baseline", "middle");
+    labelText.setAttribute("font-size", "16");
+    labelText.setAttribute("fill", "#444");
+    labelText.setAttribute("y", "28");
+    labelText.textContent = "Aires de covoiturage";
+    svg.appendChild(labelText);
+
+    document.getElementById("donut-covoiturage").appendChild(svg);
+  </script>
+</Layout>
