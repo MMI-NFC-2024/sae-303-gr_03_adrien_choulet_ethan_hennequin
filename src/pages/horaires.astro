@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout>
+  <section class="bg-white py-16 px-4">
+    <div class="max-w-screen-xl mx-auto">
+      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Horaires des gares</h1>
+
+      <!-- Sélecteur -->
+      <div class="text-center mb-6">
+        <label for="select-gare" class="text-gray-700 font-medium mr-2">Filtrer par gare :</label>
+        <select id="select-gare" class="border border-gray-300 rounded px-3 py-2 text-sm"></select>
+      </div>
+
+      <!-- Graphique -->
+      <div id="plot-container" class="overflow-x-auto mb-4"></div>
+
+      <!-- Légende -->
+      <div class="text-center font-semibold text-gray-700 text-sm">
+        <span style="color: #5E7EE6;">●</span> Ouverture &nbsp;
+        <span style="color: #FF7F00;">●</span> Fermeture
+      </div>
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { csvParse } from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+    import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+
+    const raw = await fetch("/src/assets/horaires_gares_bourgogne_franche_comte.csv").then(r => r.text());
+    const horaires = csvParse(raw);
+
+    const horairesParsed = horaires.map(d => {
+      const [start, end] = d["Horaire en jour normal"]?.split("-") ?? [];
+      return {
+        gare: d["Gare"],
+        uic: d["UIC"],
+        jour: d["Jour de la semaine"],
+        ouverture: start ? parseInt(start.split(":")[0]) * 60 + parseInt(start.split(":")[1]) : null,
+        fermeture: end ? parseInt(end.split(":")[0]) * 60 + parseInt(end.split(":")[1]) : null
+      };
+    }).filter(d => d.ouverture !== null && d.fermeture !== null);
+
+    const select = document.getElementById("select-gare");
+    const container = document.getElementById("plot-container");
+
+    const gares = [...new Set(horairesParsed.map(d => d.gare))].sort();
+    gares.forEach(g => {
+      const opt = document.createElement("option");
+      opt.value = g;
+      opt.textContent = g;
+      select.appendChild(opt);
+    });
+
+    function render(gare) {
+      const horairesFiltres = horairesParsed.filter(d => d.gare === gare);
+      const jours = [...new Set(horairesFiltres.map(d => d.jour))];
+
+      const plot = Plot.plot({
+        height: 600,
+        width: 820,
+        marginLeft: 120,
+        marginRight: 60,
+        style: {
+          background: "white",
+          fontFamily: "'Inter','Segoe UI',Arial,sans-serif",
+          fontSize: "17px",
+          color: "#222"
+        },
+        x: {
+          label: "Heure (minutes depuis minuit)",
+          grid: true,
+          tickFormat: d => `${Math.floor(d/60)}h${String(d%60).padStart(2, "0")}`,
+          labelAnchor: "center",
+          labelFontWeight: "bold"
+        },
+        y: {
+          label: "Jour",
+          domain: jours,
+          tickSize: 0,
+          tickPadding: 14,
+          fontWeight: "600"
+        },
+        marks: [
+          Plot.dot(horairesFiltres, {
+            x: "ouverture",
+            y: "jour",
+            stroke: "#5E7EE6",
+            fill: "#5E7EE6",
+            r: 10,
+            opacity: 0.80,
+            title: d => `${d.gare} : ${d.jour} → ${Math.floor(d.ouverture/60)}h${String(d.ouverture%60).padStart(2, "0")} à ${Math.floor(d.fermeture/60)}h${String(d.fermeture%60).padStart(2, "0")}`
+          }),
+          Plot.dot(horairesFiltres, {
+            x: "fermeture",
+            y: "jour",
+            stroke: "#FF7F00",
+            fill: "#FF7F00",
+            r: 10,
+            opacity: 0.80,
+            title: d => `${d.gare} : ${d.jour} → ${Math.floor(d.ouverture/60)}h${String(d.ouverture%60).padStart(2, "0")} à ${Math.floor(d.fermeture/60)}h${String(d.fermeture%60).padStart(2, "0")}`
+          })
+        ]
+      });
+
+      container.innerHTML = "";
+      container.appendChild(plot);
+    }
+
+    select.addEventListener("change", e => render(e.target.value));
+    render(gares[0]);
+  </script>
+</Layout>
