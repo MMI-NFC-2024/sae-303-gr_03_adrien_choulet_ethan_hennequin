@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 ---
 <Layout>
   <section class="bg-white py-16 px-4">
@@ -25,6 +26,21 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
   </section>
+  <section class="bg-white py-16 px-4 border-t border-gray-200">
+  <div class="max-w-screen-xl mx-auto">
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Liste des festivals par département</h2>
+
+    <!-- Sélecteur -->
+    <div class="text-center mb-6">
+      <label for="select-departement" class="text-gray-700 font-medium mr-2">Sélectionner un département :</label>
+      <select id="select-departement" class="border border-gray-300 rounded px-3 py-2 text-sm"></select>
+    </div>
+
+    <!-- Résultat -->
+    <div id="festival-list" class="space-y-6"></div>
+  </div>
+</section>
+  
 
   <!-- Leaflet + Script -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -103,4 +119,77 @@ import Layout from '../layouts/Layout.astro';
       updateMarkers(filtered);
     });
   </script>
+
+  <script type="module">
+  import { csvParse } from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+  const data = await fetch("/src/assets/festival_BFC.csv").then(r => r.text()).then(csvParse);
+
+  const select = document.getElementById("select-departement");
+  const list = document.getElementById("festival-list");
+console.log(Array.isArray(data), data[0]);
+
+const departements = [];
+const map = new Map();
+
+data.forEach(f => {
+  const dep = f["Département principal de déroulement"];
+  if (!dep) return;
+  if (!map.has(dep)) map.set(dep, []);
+  map.get(dep).push(f);
+});
+
+map.forEach((festivals, nom) => {
+  departements.push({ nom, festivals, count: festivals.length });
+});
+
+  // Remplir le select
+  departements.forEach(dep => {
+    const opt = document.createElement("option");
+    opt.value = dep.nom;
+    opt.textContent = `${dep.nom} (${dep.count} festivals)`;
+    select.appendChild(opt);
+  });
+
+  // Afficher festivals
+  function renderFestivals(depName) {
+    const festivals = data.filter(f => f["Département principal de déroulement"] === depName);
+    list.innerHTML = `<h3 class="text-xl font-semibold text-gray-800 mb-4">Festivals en ${depName} (${festivals.length})</h3>` +
+      festivals.map(f => `
+        <div class="border border-gray-200 rounded-lg p-6 bg-gray-50">
+          <h4 class="text-lg font-bold text-blue-700 mb-2">${f["Nom du festival"]}</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-700">
+            <div>
+              <strong>Localisation</strong><br/>
+              Commune : ${f["Commune principale de déroulement"]}<br/>
+              Code postal : ${f["Code postal (de la commune principale de déroulement)"]}<br/>
+              ${f["Adresse postale"] || "Adresse non renseignée"}
+            </div>
+            <div>
+              <strong>Discipline</strong><br/>
+              ${f["Discipline dominante"]}<br/>
+              ${f["Sous-catégorie musique"] ? `Musique : ${f["Sous-catégorie musique"]}<br/>` : ""}
+              ${f["Sous-catégorie spectacle vivant"] ? `Spectacle : ${f["Sous-catégorie spectacle vivant"]}<br/>` : ""}
+              ${f["Sous-catégorie livre et littérature"] ? `Littérature : ${f["Sous-catégorie livre et littérature"]}` : ""}
+            </div>
+            <div>
+              <strong>Période</strong><br/>
+              ${f["Période principale de déroulement du festival"]}<br/>
+              ${f["Année de création du festival"] ? `Créé en ${f["Année de création du festival"]}` : ""}
+            </div>
+            <div>
+              <strong>Contact</strong><br/>
+              ${f["Site internet du festival"] ? `<a href="${f["Site internet du festival"]}" target="_blank" class="text-blue-600 hover:underline">Site web</a><br/>` : ""}
+              ${f["Adresse e-mail"] ? `Email : <a href="mailto:${f["Adresse e-mail"]}" class="text-blue-600 hover:underline">${f["Adresse e-mail"]}</a>` : ""}
+            </div>
+          </div>
+          ${f["Envergure territoriale"] ? `<div class="mt-4"><strong>Envergure :</strong> ${f["Envergure territoriale"]}</div>` : ""}
+        </div>
+      `).join("");
+  }
+
+  // Initialisation
+  select.addEventListener("change", e => renderFestivals(e.target.value));
+  renderFestivals(departements[0].nom);
+</script>
 </Layout>
