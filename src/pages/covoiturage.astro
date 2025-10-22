@@ -4,17 +4,31 @@ import Layout from '../layouts/Layout.astro';
 <Layout>
   <section class="bg-white py-16 px-4">
     <div class="max-w-screen-xl mx-auto">
-      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Aires de covoiturage par département</h1>
-      
+      <!-- Titre principal -->
+      <h1 class="text-4xl font-bold text-orange-600 text-center mb-4">
+        Aires de covoiturage par département
+      </h1>
+
+      <!-- Descriptif -->
+      <div class="text-gray-700 text-lg max-w-4xl mx-auto mb-10 leading-relaxed text-justify">
+        <p class="mb-4">
+          <span class="font-semibold text-orange-500">Objectif :</span> cette représentation des pourcentages d’aires de covoiturage par département vise à donner une vision claire de la répartition de ces infrastructures sur l’ensemble du territoire de Bourgogne-Franche-Comté. Elle permet à l’utilisateur d’évaluer la facilité d’accès aux différents lieux culturels grâce au covoiturage, en identifiant les zones où ce mode de transport est particulièrement bien implanté.
+        </p>
+        <p class="mb-4">
+          Cette approche met en évidence les départements où les dispositifs de mobilité partagée sont les plus développés, tout en signalant ceux où l’offre pourrait être renforcée pour améliorer la connectivité régionale.
+        </p>
+        <p class="mb-4">
+          <span class="font-semibold text-orange-500">Mobilité durable :</span> le covoiturage, au même titre que le train, constitue l’une des formes de mobilité durable les plus accessibles pour les déplacements de moyenne et longue distance. En reliant les données sur les aires de covoiturage à la localisation des sites culturels, il devient possible de mesurer la complémentarité entre ces deux réseaux de transport.
+        </p>
+        <p>
+          Cette analyse contribue à promouvoir une mobilité responsable, en favorisant un accès culturel plus équitable et respectueux de l’environnement, tout en renforçant les dynamiques territoriales autour des mobilités collectives.
+        </p>
+      </div>
+
+      <!-- Graphe donut -->
       <div id="donut-covoiturage" class="flex justify-center"></div>
     </div>
   </section>
-
-  <p class="text-center text-gray-700 text-lg max-w-3xl mx-auto mb-8">
-        Cette représentation des pourcentages d’aires de covoiturage par département vise à donner une vision claire de la répartition de ces infrastructures sur l’ensemble du territoire de Bourgogne-Franche-Comté. Elle permet à l’utilisateur d’évaluer la facilité d’accès aux différents lieux culturels grâce au covoiturage, en identifiant les zones où ce mode de transport est particulièrement bien implanté. Cette approche met en évidence les départements où les dispositifs de mobilité partagée sont les plus développés, tout en signalant ceux où l’offre pourrait être renforcée pour améliorer la connectivité régionale.
-
-Le covoiturage, au même titre que le train, constitue l’une des formes de mobilité durable les plus accessibles pour les déplacements de moyenne et longue distance. En reliant les données sur les aires de covoiturage à la localisation des sites culturels, il devient possible de mesurer la complémentarité entre ces deux réseaux de transport. Cette analyse contribue à promouvoir une mobilité responsable, en favorisant un accès culturel plus équitable et respectueux de l’environnement, tout en renforçant les dynamiques territoriales autour des mobilités collectives.
-      </p>
 
   <!-- Script -->
   <script type="module">
@@ -31,7 +45,6 @@ Le covoiturage, au même titre que le train, constitue l’une des formes de mob
       return obj;
     });
 
-    // Regroupement par département
     const counts = {};
     data.forEach(d => {
       const dep = parseInt(d.num_dep);
@@ -47,14 +60,12 @@ Le covoiturage, au même titre que le train, constitue l’une des formes de mob
       proportion: count / total
     })).sort((a, b) => a.Departement - b.Departement);
 
-    // Couleurs
     const colorMap = {};
     const oranges = ["#ff8c00", "#ff7f00", "#ff9933", "#ffaa33"];
     const blues = ["#1e90ff", "#4169e1", "#0066cc", "#3366ff"];
     francheComte.forEach((d, i) => colorMap[d] = oranges[i % oranges.length]);
     bourgogne.forEach((d, i) => colorMap[d] = blues[i % blues.length]);
 
-    // Données pour arcs
     const angles = [];
     let startAngle = 0;
     dataDepartements.forEach(d => {
@@ -91,17 +102,16 @@ Le covoiturage, au même titre que le train, constitue l’une des formes de mob
     svg.setAttribute("viewBox", "-350 -300 1000 600");
     svg.style.fontFamily = "Inter, sans-serif";
 
-    // Titre
     const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
     title.setAttribute("x", "0");
     title.setAttribute("y", "-260");
     title.setAttribute("text-anchor", "middle");
     title.setAttribute("font-size", "24");
     title.setAttribute("font-weight", "bold");
+    title.setAttribute("fill", "#ff7f00");
     title.textContent = "Aires de covoiturage par département";
     svg.appendChild(title);
 
-    // Sous-titre
     const subtitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
     subtitle.setAttribute("x", "0");
     subtitle.setAttribute("y", "-238");
@@ -111,7 +121,6 @@ Le covoiturage, au même titre que le train, constitue l’une des formes de mob
     subtitle.textContent = "Bourgogne-Franche-Comté";
     svg.appendChild(subtitle);
 
-    // Arcs
     angles.forEach(d => {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", describeArc(d.startAngle, d.endAngle, innerRadius, outerRadius));
@@ -121,7 +130,6 @@ Le covoiturage, au même titre que le train, constitue l’une des formes de mob
       svg.appendChild(path);
     });
 
-    // Labels
     angles.forEach(d => {
       const mid = (d.startAngle + d.endAngle) / 2;
       const [x, y] = polarToCartesian(mid, outerRadius * 0.75);
@@ -138,7 +146,6 @@ Le covoiturage, au même titre que le train, constitue l’une des formes de mob
       svg.appendChild(text);
     });
 
-    // Centre
     const totalText = document.createElementNS("http://www.w3.org/2000/svg", "text");
     totalText.setAttribute("text-anchor", "middle");
     totalText.setAttribute("alignment-baseline", "middle");
@@ -160,3 +167,4 @@ Le covoiturage, au même titre que le train, constitue l’une des formes de mob
     document.getElementById("donut-covoiturage").appendChild(svg);
   </script>
 </Layout>
+

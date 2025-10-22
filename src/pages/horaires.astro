@@ -4,8 +4,19 @@ import Layout from '../layouts/Layout.astro';
 <Layout>
   <section class="bg-white py-16 px-4">
     <div class="max-w-screen-xl mx-auto">
-      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Horaire d'ouverture et de fermeture des gares les plus prisées de Bourgogne Franche-Comté.</h1>
- 
+      <!-- Titre principal -->
+      <h1 class="text-4xl font-bold text-orange-600 text-center mb-4">
+        Horaires d’ouverture et de fermeture des gares les plus fréquentées
+      </h1>
+
+      <!-- Descriptif -->
+      <p class="text-center text-gray-700 text-lg max-w-4xl mx-auto mb-10 leading-relaxed">
+        L’objectif de cette section est d’informer l’utilisateur sur les horaires d’ouverture des gares de Bourgogne-Franche-Comté. Le graphique se concentre spécifiquement sur les gares présentant les plus fortes affluences, afin de garantir une lecture claire et synthétique des données. Cette sélection permet de mettre en avant les principaux pôles de mobilité régionaux, qui jouent un rôle central dans l’organisation des déplacements culturels et touristiques.
+
+        En visualisant les horaires d’ouverture, l’utilisateur peut anticiper plus facilement ses trajets vers les festivals ou les lieux culturels de la région, tout en tenant compte des contraintes horaires liées à la disponibilité des services ferroviaires. L’intégration de ces informations favorise une planification plus fluide et encourage le recours au train comme moyen de transport privilégié, réduisant ainsi la dépendance à la voiture individuelle.
+      </p>
+
+      <!-- Filtre -->
       <div class="text-center mb-6">
         <label for="select-gare" class="text-gray-700 font-medium mr-2">Filtrer par gare :</label>
         <select id="select-gare" class="border border-gray-300 rounded px-3 py-2 text-sm"></select>
@@ -22,13 +33,7 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
-  <p class="text-center text-gray-700 text-lg max-w-3xl mx-auto mb-8">
-L’objectif de cette section est d’informer l’utilisateur sur les horaires d’ouverture des gares de Bourgogne-Franche-Comté. Le graphique se concentre spécifiquement sur les gares présentant les plus fortes affluences, afin de garantir une lecture claire et synthétique des données. Cette sélection permet de mettre en avant les principaux pôles de mobilité régionaux, qui jouent un rôle central dans l’organisation des déplacements culturels et touristiques.
-
-En visualisant les horaires d’ouverture, l’utilisateur peut anticiper plus facilement ses trajets vers les festivals ou les lieux culturels de la région, tout en tenant compte des contraintes horaires liées à la disponibilité des services ferroviaires. L’intégration de ces informations favorise une planification plus fluide et encourage le recours au train comme moyen de transport privilégié, réduisant ainsi la dépendance à la voiture individuelle.      </p>
-      <!-- Sélecteur -->
-
-  <!-- Scripts -->
+  <!-- Script -->
   <script type="module">
     import { csvParse } from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
     import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
@@ -117,3 +122,4 @@ En visualisant les horaires d’ouverture, l’utilisateur peut anticiper plus f
     render(gares[0]);
   </script>
 </Layout>
+
