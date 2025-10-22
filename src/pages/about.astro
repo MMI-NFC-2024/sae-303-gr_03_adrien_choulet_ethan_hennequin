@@ -1,0 +1,76 @@
+---
+// Page À propos
+import Layout from '../layouts/Layout.astro';
+---
+<Layout>
+  <section class="bg-white py-16 px-4">
+    <div class="max-w-screen-xl mx-auto space-y-12">
+      
+      <!-- Titre principal -->
+      <div class="text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900">À propos du projet</h1>
+        <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+          Réalisé par <strong>Adrien Choulet</strong> et <strong>Ethan Hennequin</strong> dans le cadre de la SAE 303 — Open Data University.
+        </p>
+      </div>
+
+      <!-- Contexte -->
+      <div class="space-y-4 text-gray-700 text-base leading-relaxed">
+        <p>
+          Nous avons choisi de nous intéresser au tourisme ferroviaire en France, à travers le défi :
+          <span class="italic text-blue-700 font-medium">“Comment l'usage du train en Bourgogne-Franche-Comté influence-t-il l'accès aux lieux culturels ?”</span>
+        </p>
+        <p>
+          À partir de données ouvertes (SNCF, billetterie, communautés locales), nous avons conçu une communication visuelle claire, pertinente et esthétique, soutenue par une analyse rigoureuse et des visualisations interactives.
+        </p>
+      </div>
+
+      <!-- Objectifs -->
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Objectifs de la SAE</h2>
+        <ul class="list-disc list-inside space-y-2 text-gray-700 text-sm">
+          <li>Comprendre et analyser des données ouvertes pour en extraire une information exploitable</li>
+          <li>Construire une narration claire et cohérente à partir d’un jeu de données visuel</li>
+          <li>Réaliser des visualisations interactives pertinentes (graphiques, cartes, diagrammes)</li>
+          <li>Produire une visualisation interactive à l’aide d’Astro</li>
+          <li>Utiliser des outils de visualisation et de développement front-end</li>
+        </ul>
+      </div>
+
+      <!-- Livrables -->
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Livrables</h2>
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-lg font-medium text-gray-800 mb-2">1. Notebook Observable</h3>
+            <ul class="list-disc list-inside space-y-1 text-gray-700 text-sm">
+              <li>Définition d’un axe de communication clair</li>
+              <li>Nettoyage, filtrage et analyse des données</li>
+              <li>Au moins 4 visualisations (carte, interactive, comparative…)</li>
+              <li>Analyse rédigée : choix graphiques, interprétation, biais</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-gray-800 mb-2">2. Mini-site web (Astro)</h3>
+            <ul class="list-disc list-inside space-y-1 text-gray-700 text-sm">
+              <li>Mise en page claire et identifiée à notre binôme</li>
+              <li>Visualisations intégrées et interactives</li>
+              <li>Présentation synthétique du sujet, des données et des conclusions</li>
+              <li>Respect des principes de lisibilité et hiérarchie visuelle</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacts -->
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Contacts utiles</h2>
+        <ul class="list-disc list-inside space-y-2 text-sm text-gray-700">
+          <li>Offre culturelle : <a href="mailto:offre-culturelle@opendatauniversity.org" class="text-blue-600 hover:underline">offre-culturelle@opendatauniversity.org</a></li>
+          <li>Santé et territoires : <a href="mailto:sante-et-territoires@opendatauniversity.org" class="text-blue-600 hover:underline">sante-et-territoires@opendatauniversity.org</a></li>
+          <li>Tourisme en train : <a href="mailto:tourisme-en-train@opendatauniversity.org" class="text-blue-600 hover:underline">tourisme-en-train@opendatauniversity.org</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Layout>
