@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout>
+  <section class="bg-white py-16 px-4">
+    <div class="max-w-screen-xl mx-auto">
+      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Festivals en Bourgogne-Franche-Comté</h1>
+
+      <!-- Carte + filtre -->
+      <div class="space-y-6">
+        <!-- Filtre -->
+        <div class="text-center">
+          <label for="filtre" class="text-gray-700 font-medium mr-2">Filtrer par département :</label>
+          <select id="filtre" class="border border-gray-300 rounded px-3 py-2 text-sm">
+            <option value="">Tous</option>
+            <!-- Options dynamiques ajoutées via JS -->
+          </select>
+        </div>
+
+        <!-- Carte -->
+        <div id="plan" class="w-full h-[600px] rounded-lg shadow border border-gray-200"></div>
+
+        <!-- Infos festival -->
+        <div id="festival-info" class="mt-6 text-sm text-gray-700 font-sans"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leaflet + Script -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <script type="module">
+    import { csv } from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+    const data = await csv("/src/assets/festival_BFC.csv"); // adapte le chemin si besoin
+
+    const map = L.map("plan").setView([47.3, 5.5], 8);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors"
+    }).addTo(map);
+
+    let markers = [];
+
+    function updateMarkers(filtered) {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+
+      filtered.forEach(f => {
+        const coords = f["Géocodage xy"];
+        if (!coords || !coords.includes(",")) return;
+        const [lat, lon] = coords.split(",").map(Number);
+        if (isNaN(lat) || isNaN(lon)) return;
+
+        const marker = L.circleMarker([lat, lon], {
+          radius: 6,
+          fillColor: "purple",
+          color: "#333",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8
+        });
+
+        marker.on("click", () => {
+          document.getElementById("festival-info").innerHTML = `
+            <strong>${f["Nom du festival"]}</strong><br>
+            Discipline : ${f["Discipline dominante"] || "N/A"}<br>
+            Commune : ${f["Commune principale de déroulement"]}<br>
+            Département : ${f["Département principal de déroulement"]}<br>
+            Site : ${
+              f["Site internet du festival"]
+                ? `<a href="${f["Site internet du festival"]}" target="_blank">${f["Site internet du festival"]}</a>`
+                : "N/A"
+            }<br>
+            Email : ${f["Adresse e-mail"] || "N/A"}
+          `;
+        });
+
+        marker.addTo(map);
+        markers.push(marker);
+      });
+    }
+
+    // Initialisation
+    updateMarkers(data);
+
+    // Remplir le filtre
+    const select = document.getElementById("filtre");
+    const deps = [...new Set(data.map(f => f["Département principal de déroulement"]))];
+    deps.forEach(dep => {
+      const opt = document.createElement("option");
+      opt.value = dep;
+      opt.textContent = dep;
+      select.appendChild(opt);
+    });
+
+    // Filtrage
+    select.addEventListener("change", e => {
+      const selected = e.target.value;
+      const filtered = selected
+        ? data.filter(f => f["Département principal de déroulement"] === selected)
+        : data;
+      updateMarkers(filtered);
+    });
+  </script>
+</Layout>
