@@ -1,0 +1,89 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout>
+  <section class="bg-white py-16 px-4">
+    <div class="max-w-screen-xl mx-auto">
+      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Accessibilité culturelle et ferroviaire</h1>
+
+      <!-- Carte -->
+      <div id="plangare" class="w-full h-[600px] rounded-lg shadow border border-gray-200"></div>
+    </div>
+  </section>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Script d’intégration -->
+  <script type="module">
+    import departementsBourgogneFrancheComteGeojson from "/src/assets/departements-bourgogne-franche-comte.geojson.json";
+    import voie_ferre from "/src/assets/voie_Ferre@1.geojson.json";
+    import gares from "/src/assets/gares-de-voyageurs.geojson.json";
+
+    function createTileLayer() {
+      return L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors"
+      });
+    }
+
+    function styleDepartements(feature) {
+      return {
+        color: "#999",
+        weight: 1,
+        fillColor: "#f0f0f0",
+        fillOpacity: 0.5
+      };
+    }
+
+    function styleVoiesFerrees(feature) {
+      return {
+        color: "crimson",
+        weight: 2
+      };
+    }
+
+    function styleGares(feature) {
+      return {
+        radius: 6,
+        fillColor: "blue",
+        color: "#333",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      };
+    }
+
+    function createDepartementsLayer(geojson) {
+      return L.geoJSON(geojson, {
+        style: styleDepartements
+      });
+    }
+
+    function createVoiesFerreesLayer(geojson) {
+      return L.geoJSON(geojson, {
+        style: styleVoiesFerrees
+      });
+    }
+
+    function createGaresLayer(geojson) {
+      return L.geoJSON(geojson, {
+        pointToLayer: (feature, latlng) => L.circleMarker(latlng, styleGares(feature))
+      });
+    }
+
+    function initMap({ departements, voiesFerrees, gares }) {
+      const map = L.map("plangare").setView([47.5, 6.8], 8);
+      createTileLayer().addTo(map);
+      createDepartementsLayer(departements).addTo(map);
+      createVoiesFerreesLayer(voiesFerrees).addTo(map);
+      createGaresLayer(gares).addTo(map);
+    }
+
+    initMap({
+      departements: departementsBourgogneFrancheComteGeojson,
+      voiesFerrees: voie_ferre,
+      gares: gares
+    });
+  </script>
+</Layout>
