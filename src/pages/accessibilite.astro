@@ -8,12 +8,11 @@ import Layout from '../layouts/Layout.astro';
         Carte des différentes gares de France et des lignes ferroviaires de Bourgogne Franche-Comté
       </h1>
 
-      <p class="text-center text-gray-700 text-lg max-w-3xl mx-auto mb-8">
-        L'objectif est d'informer l'utilisateur sur les différentes lignes ferroviaires et gares de Bourgogne Franche-Comté afin de savoir comment se rendre dans tels ou tels lieux culturels de la façon la plus simple possible.
-      </p>
+      
 
       <!-- Carte -->
       <div id="plangare" class="w-full h-[600px] rounded-lg shadow border border-gray-200"></div>
+    
     </div>
   </section>
 
@@ -21,11 +20,19 @@ import Layout from '../layouts/Layout.astro';
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
+  <p class="text-center text-gray-700 text-lg max-w-3xl mx-auto mb-8">
+        L’objectif principal de ce projet est d’offrir à l’utilisateur une vision claire et complète du réseau ferroviaire en Bourgogne-Franche-Comté. En mettant en avant les différentes lignes de train ainsi que les gares régionales, cette approche vise à faciliter la compréhension des possibilités de déplacement au sein du territoire. Elle s’inscrit dans une logique d’accessibilité et de valorisation des infrastructures existantes, en permettant à chacun de mieux appréhender la structure du réseau de transport régional.
+
+Au-delà de l’aspect informatif, le projet cherche à guider l’utilisateur dans ses choix de mobilité. En visualisant les connexions ferroviaires les plus pertinentes, il devient plus simple de planifier un trajet efficace pour se rendre dans les lieux culturels de la région. Cette représentation des données peut également souligner les zones moins bien desservies, offrant ainsi des perspectives d’amélioration pour la mobilité territoriale. 
+
+Enfin, cette démarche contribue à promouvoir les mobilités durables en incitant les usagers à privilégier le train ou les correspondances de covoiturage plutôt que des modes de transport individuels et polluants. En rendant visibles les accès possibles aux sites culturels par des moyens de transport écologiques, le projet participe à une dynamique globale de développement durable et de valorisation du patrimoine régional.
+      </p>
+
   <!-- Script d’intégration -->
   <script type="module">
-    import departementsBourgogneFrancheComteGeojson from "/src/assets/departements-bourgogne-franche-comte.geojson.json";
-    import voie_ferre from "/src/assets/voie_Ferre@1.geojson.json";
-    import gares from "/src/assets/gares-de-voyageurs.geojson.json";
+    import departementsBourgogneFrancheComteGeojson from "/public/departements-bourgogne-franche-comte.geojson.json";
+    import voie_ferre from "/public/voie_Ferre@1.geojson.json";
+    import gares from "/public/gares-de-voyageurs.geojson.json";
 
     function createTileLayer() {
       return L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {

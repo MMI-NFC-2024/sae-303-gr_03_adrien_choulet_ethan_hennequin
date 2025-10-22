@@ -37,7 +37,11 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
     <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Liste des informations détaillées sur les différents festivals de Bourgogne Franche-Comté</h2>
 
      <p class="text-center text-gray-700 text-lg max-w-3xl mx-auto mb-8">
-        Ici les informations sont plus détaillés que sur la carte. Dans le site, cette partie sera additionnelle à la carte. On y observe la localisation, la discipline, la période, le contact, le site web lorsqu'il y en a un et l'envergure du festival. Ici les informations sont plus détaillés que sur la carte. Dans le site, cette partie sera additionnelle à la carte. On y observe la localisation, la discipline, la période, le contact, le site web (lorsqu'il y en a un) et l'envergure du festival. Grace à ces deux représentations, qu'il est possible de liées à ceux des mobilités on obtient le parcours voulu de chacun de façon la plus écologique possible.
+        Cette carte choroplèthe offre une première approche visuelle du maillage culturel de la Bourgogne-Franche-Comté à travers la localisation des festivals présents sur le territoire. Chaque point de données permet d’accéder à des informations essentielles sur ces événements, telles que leur nom, leur nature et leur implantation géographique. Cette représentation spatiale constitue ainsi une porte d’entrée vers une compréhension globale de la répartition de l’offre culturelle régionale, avant d’approfondir les détails dans la liste d’informations complémentaire située en dessous.
+
+En parallèle, la carte met en lumière la manière dont ces festivals s’inscrivent dans le réseau de mobilités durables. En croisant leurs localisations avec le desservissement ferroviaire ou les points de covoiturage, elle permet d’évaluer l’accessibilité de ces événements sans recourir systématiquement à la voiture individuelle. Cette lecture territoriale contribue ainsi à identifier les zones bien connectées, mais aussi celles dont l’accès culturel pourrait être renforcé par une meilleure intégration des transports durables.
+
+Enfin, en associant données culturelles et infrastructures de transport, la carte participe à une réflexion plus large sur la durabilité des pratiques culturelles. Elle sensibilise les usagers à l’impact environnemental de leurs déplacements, tout en promouvant des solutions concrètes pour une participation responsable à la vie culturelle régionale.
 
 
       </p>
@@ -61,7 +65,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
   <script type="module">
     import { csv } from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
-    const data = await csv("/src/assets/festival_BFC.csv"); // adapte le chemin si besoin
+    const data = await csv("/festival_BFC.csv"); // adapte le chemin si besoin
 
     const map = L.map("plan").setView([47.3, 5.5], 8);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -135,7 +139,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
   <script type="module">
   import { csvParse } from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
-  const data = await fetch("/src/assets/festival_BFC.csv").then(r => r.text()).then(csvParse);
+  const data = await fetch("/festival_BFC.csv").then(r => r.text()).then(csvParse);
 
   const select = document.getElementById("select-departement");
   const list = document.getElementById("festival-list");
