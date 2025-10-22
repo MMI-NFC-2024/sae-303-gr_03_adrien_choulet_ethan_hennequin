@@ -4,7 +4,13 @@ import Layout from '../layouts/Layout.astro';
 <Layout>
   <section class="bg-white py-16 px-4">
     <div class="max-w-screen-xl mx-auto">
-      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Accessibilité culturelle et ferroviaire</h1>
+      <h1 class="text-4xl font-bold text-gray-900 text-center mb-4">
+        Carte des différentes gares de France et des lignes ferroviaires de Bourgogne Franche-Comté
+      </h1>
+
+      <p class="text-center text-gray-700 text-lg max-w-3xl mx-auto mb-8">
+        L'objectif est d'informer l'utilisateur sur les différentes lignes ferroviaires et gares de Bourgogne Franche-Comté afin de savoir comment se rendre dans tels ou tels lieux culturels de la façon la plus simple possible.
+      </p>
 
       <!-- Carte -->
       <div id="plangare" class="w-full h-[600px] rounded-lg shadow border border-gray-200"></div>
@@ -68,7 +74,21 @@ import Layout from '../layouts/Layout.astro';
 
     function createGaresLayer(geojson) {
       return L.geoJSON(geojson, {
-        pointToLayer: (feature, latlng) => L.circleMarker(latlng, styleGares(feature))
+        pointToLayer: (feature, latlng) => L.circleMarker(latlng, styleGares(feature)),
+        onEachFeature: (feature, layer) => {
+          const props = feature.properties;
+          const nom = props["nom_gare"] || props["NOM"] || "Gare";
+          const commune = props["commune"] || props["COMMUNE"] || "";
+          const codeUIC = props["code_uic"] || props["UIC"] || "";
+          const html = `
+            <div style="font-family: 'Inter', sans-serif; font-size: 14px;">
+              <strong style="font-size: 16px; color: #2c3e50;">${nom}</strong><br/>
+              ${commune ? `<span>Commune : ${commune}</span><br/>` : ""}
+              ${codeUIC ? `<span>Code UIC : ${codeUIC}</span><br/>` : ""}
+            </div>
+          `;
+          layer.bindPopup(html);
+        }
       });
     }
 
@@ -87,3 +107,4 @@ import Layout from '../layouts/Layout.astro';
     });
   </script>
 </Layout>
+
